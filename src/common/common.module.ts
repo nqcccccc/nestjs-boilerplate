@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import configs from '@configs/index';
 import { DatabaseModule } from '@common/database/database.module';
 import { LoggerModule } from '@common/logger/logger.module';
+import { ErrorModule } from '@common/error/error.module';
 
 @Module({
   controllers: [],
@@ -17,6 +18,7 @@ import { LoggerModule } from '@common/logger/logger.module';
     }), //todo: validate .env
     LoggerModule,
     DatabaseModule,
+    ErrorModule,
   ],
 })
 export class CommonModule {}
