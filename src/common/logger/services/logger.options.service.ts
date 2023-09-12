@@ -3,6 +3,14 @@ import * as winston from 'winston';
 import 'winston-daily-rotate-file';
 import { utilities as nestWinstonModuleUtilities } from 'nest-winston';
 
+const infoAndWarnFilter = winston.format((info, opts) => {
+  return info.level === 'info' || info.level === 'warn' ? info : false;
+});
+
+const httpFilter = winston.format((info, opts) => {
+  return info.level === 'http' ? info : false;
+});
+
 export const LoggerOptionService = (configService: ConfigService) => {
   const writeIntoFile = configService.get<boolean>(
     'logger.system.writeIntoFile',
@@ -32,17 +40,6 @@ export const LoggerOptionService = (configService: ConfigService) => {
     transports.push(
       new winston.transports.DailyRotateFile({
         filename: `%DATE%.log`,
-        dirname: `logs/default`,
-        datePattern: 'YYYY-MM-DD',
-        zippedArchive: true,
-        maxSize: maxSize,
-        maxFiles: maxFiles,
-        level: 'info',
-      }),
-    );
-    transports.push(
-      new winston.transports.DailyRotateFile({
-        filename: `%DATE%.log`,
         dirname: `logs/debug`,
         datePattern: 'YYYY-MM-DD',
         zippedArchive: true,
@@ -60,6 +57,19 @@ export const LoggerOptionService = (configService: ConfigService) => {
         maxSize: maxSize,
         maxFiles: maxFiles,
         level: 'http',
+        format: winston.format.combine(httpFilter()),
+      }),
+    );
+    transports.push(
+      new winston.transports.DailyRotateFile({
+        filename: `%DATE%.log`,
+        dirname: `logs/default`,
+        datePattern: 'YYYY-MM-DD',
+        zippedArchive: true,
+        maxSize: maxSize,
+        maxFiles: maxFiles,
+        level: 'info',
+        format: winston.format.combine(infoAndWarnFilter()),
       }),
     );
   }
