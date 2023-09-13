@@ -1,7 +1,8 @@
-import { Controller, Get, Headers, VERSION_NEUTRAL } from '@nestjs/common';
+import { Controller, Get, Req, VERSION_NEUTRAL } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as dayjs from 'dayjs';
 import { IAppTestResponse } from '@app/interfaces/IAppTestResponse';
+import { Request } from 'express';
 
 @Controller({
   version: VERSION_NEUTRAL,
@@ -15,9 +16,7 @@ export class AppController {
   }
 
   @Get('/hello')
-  async hello(
-    @Headers('user-agent') userAgent: any,
-  ): Promise<IAppTestResponse> {
+  async hello(@Req() req: Request): Promise<IAppTestResponse> {
     return {
       _metadata: {
         customProperty: {
@@ -27,11 +26,19 @@ export class AppController {
         },
       },
       data: {
-        userAgent,
+        userAgent: req.__userAgent,
         date: dayjs(),
         format: dayjs().format('YYYY-MM-DD'),
         timestamp: dayjs().valueOf(),
       },
     };
+  }
+
+  async delayMs(ms: number): Promise<void> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, ms);
+    });
   }
 }
