@@ -33,12 +33,4 @@ export class AppController {
       },
     };
   }
-
-  async delayMs(ms: number): Promise<void> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve();
-      }, ms);
-    });
-  }
 }
