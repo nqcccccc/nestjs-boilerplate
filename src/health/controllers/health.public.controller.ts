@@ -1,4 +1,4 @@
-import { Controller, Get, VERSION_NEUTRAL } from '@nestjs/common';
+import { Controller, Get, Inject, VERSION_NEUTRAL } from '@nestjs/common';
 import {
   DiskHealthIndicator,
   HealthCheck,
@@ -6,18 +6,25 @@ import {
   MemoryHealthIndicator,
   TypeOrmHealthIndicator,
 } from '@nestjs/terminus';
+import { MessageService } from '@common/message/services/message.service';
+import { I18nService } from 'nestjs-i18n';
 
 @Controller({
   version: VERSION_NEUTRAL,
   path: '/health',
 })
 export class HealthPublicController {
+  private messageService: MessageService;
+
   constructor(
     private readonly health: HealthCheckService,
     private readonly memoryHealthIndicator: MemoryHealthIndicator,
     private readonly diskHealthIndicator: DiskHealthIndicator,
     private readonly databaseIndicator: TypeOrmHealthIndicator,
-  ) {}
+    private readonly i18nService: I18nService,
+  ) {
+    this.messageService = new MessageService(i18nService, 'health');
+  }
 
   @HealthCheck()
   @Get('/database')

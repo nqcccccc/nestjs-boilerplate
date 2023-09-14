@@ -6,6 +6,7 @@ import { LoggerModule } from '@common/logger/logger.module';
 import { ErrorModule } from '@common/error/error.module';
 import { RequestModule } from '@common/request/request.module';
 import { JobsModule } from '@common/jobs/jobs.module';
+import { MessageModule } from '@common/message/message.module';
 
 @Module({
   controllers: [],
@@ -23,6 +24,7 @@ import { JobsModule } from '@common/jobs/jobs.module';
     ErrorModule,
     RequestModule,
     JobsModule.forRoot(),
+    MessageModule,
   ],
 })
 export class CommonModule {}

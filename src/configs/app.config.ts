@@ -24,5 +24,6 @@ export default registerAs(
     },
 
     jobEnable: process.env.JOB_ENABLE === 'true' ?? false,
+    defaultLanguage: process.env.APP_DEFAULT_LANGUAGE?.toLowerCase() ?? 'en',
   }),
 );
