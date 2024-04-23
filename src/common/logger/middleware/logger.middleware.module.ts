@@ -1,5 +1,5 @@
-import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { LoggerHttpMiddleware } from '@common/logger/middleware/http/logger.http.middleware';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { WinstonLogger } from 'nest-winston';
 
 @Module({

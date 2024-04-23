@@ -1,14 +1,14 @@
-import { Inject, Injectable, NestMiddleware } from '@nestjs/common';
-import * as morgan from 'morgan';
-import { Request, Response, NextFunction } from 'express';
-import { createStream } from 'rotating-file-stream';
-import { ConfigService } from '@nestjs/config';
-import * as dayjs from 'dayjs';
-import { ILoggerHttpConfigOptions } from '@common/logger/interfaces/logger.interface';
 import { LOGGER_HTTP_FORMAT } from '@common/logger/constants/logger.constant';
-import { ILoggerHttpConfig } from '@common/logger/interfaces/logger.interface';
+import { LoggerHttpConfigOptions } from '@common/logger/types/logger.type';
+import { LoggerHttpConfig } from '@common/logger/types/logger.type';
+import { Inject, Injectable, NestMiddleware } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import dayjs from 'dayjs';
+import { NextFunction, Request, Response } from 'express';
+import morgan from 'morgan';
 import { StreamOptions } from 'morgan';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { createStream } from 'rotating-file-stream';
 import { Logger } from 'winston';
 
 @Injectable()
@@ -62,10 +62,10 @@ export class LoggerHttpWriteIntoFileMiddleware implements NestMiddleware {
     this.maxFiles = this.configService.get<number>('logger.http.maxFiles');
   }
 
-  private httpLogger(): ILoggerHttpConfig {
+  private httpLogger(): LoggerHttpConfig {
     const date: string = dayjs().format('YYYY-MM-DD');
 
-    const loggerHttpOptions: ILoggerHttpConfigOptions = {
+    const loggerHttpOptions: LoggerHttpConfigOptions = {
       stream: createStream(`${date}.log`, {
         path: `./logs/http/`,
         maxSize: this.maxSize,
@@ -83,7 +83,7 @@ export class LoggerHttpWriteIntoFileMiddleware implements NestMiddleware {
 
   async use(req: Request, res: Response, next: NextFunction): Promise<void> {
     if (this.writeIntoFile) {
-      const config: ILoggerHttpConfig = this.httpLogger();
+      const config: LoggerHttpConfig = this.httpLogger();
 
       morgan(config.loggerHttpFormat, config.loggerHttpOptions)(req, res, next);
     } else {
@@ -102,7 +102,7 @@ export class LoggerHttpWriteIntoConsoleMiddleware implements NestMiddleware {
     );
   }
 
-  private async httpLogger(): Promise<ILoggerHttpConfig> {
+  private async httpLogger(): Promise<LoggerHttpConfig> {
     return {
       loggerHttpFormat: LOGGER_HTTP_FORMAT,
     };
@@ -110,7 +110,7 @@ export class LoggerHttpWriteIntoConsoleMiddleware implements NestMiddleware {
 
   async use(req: Request, res: Response, next: NextFunction): Promise<void> {
     if (this.writeIntoConsole) {
-      const config: ILoggerHttpConfig = await this.httpLogger();
+      const config: LoggerHttpConfig = await this.httpLogger();
 
       morgan(config.loggerHttpFormat)(req, res, next);
     } else {

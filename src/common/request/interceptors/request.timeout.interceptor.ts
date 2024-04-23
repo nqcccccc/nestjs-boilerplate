@@ -1,19 +1,19 @@
 import {
+  REQUEST_CUSTOM_TIMEOUT_META_KEY,
+  REQUEST_CUSTOM_TIMEOUT_VALUE_META_KEY,
+} from '@common/request/constants/request.constant';
+import {
+  CallHandler,
+  ExecutionContext,
+  HttpStatus,
   Injectable,
   NestInterceptor,
-  ExecutionContext,
-  CallHandler,
   RequestTimeoutException,
-  HttpStatus,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 import { Observable, throwError, TimeoutError } from 'rxjs';
 import { catchError, timeout } from 'rxjs/operators';
-import {
-  REQUEST_CUSTOM_TIMEOUT_META_KEY,
-  REQUEST_CUSTOM_TIMEOUT_VALUE_META_KEY,
-} from 'src/common/request/constants/request.constant';
 
 @Injectable()
 export class RequestTimeoutInterceptor

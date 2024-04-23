@@ -1,7 +1,7 @@
-import { Global, Module, Scope } from '@nestjs/common';
-import * as path from 'path';
-import { I18nModule, HeaderResolver, I18nJsonLoader } from 'nestjs-i18n';
+import { Global, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { HeaderResolver, I18nJsonLoader, I18nModule } from 'nestjs-i18n';
+import * as path from 'path';
 
 @Global()
 @Module({

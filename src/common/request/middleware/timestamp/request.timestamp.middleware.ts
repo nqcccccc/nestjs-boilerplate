@@ -1,6 +1,6 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
-import { Request, Response, NextFunction } from 'express';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
+import { NextFunction, Request, Response } from 'express';
 @Injectable()
 export class RequestTimestampMiddleware implements NestMiddleware {
   async use(req: Request, res: Response, next: NextFunction): Promise<void> {

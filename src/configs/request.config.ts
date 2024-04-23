@@ -1,9 +1,18 @@
 import { registerAs } from '@nestjs/config';
 import * as process from 'process';
 
-export default registerAs(
-  'request',
-  (): Record<string, any> => ({
+export default registerAs('request', (): Record<string, any> => {
+  const whitelist: boolean | (string | RegExp)[] =
+    !process.env.REQUEST_WHITE_LIST || process.env.REQUEST_WHITE_LIST === '*'
+      ? true
+      : (process.env.REQUEST_WHITE_LIST.split(',') || []).map((x) => {
+          x = x.trim();
+          return x.endsWith('/') && x.startsWith('/')
+            ? new RegExp(x.substring(1, x.length - 1))
+            : x;
+        });
+
+  return {
     body: {
       json: {
         maxFileSize: 100 * 1000, // 100kb
@@ -21,55 +30,14 @@ export default registerAs(
     timestamp: {
       toleranceTimeInMs: 5 * 60 * 1000, // 5 mins
     },
-    timeout: 30 * 1000, // 30s based on ms module
-    userAgent: {
-      os: ['Mobile', 'Mac OS', 'Windows', 'UNIX', 'Linux', 'iOS', 'Android'],
-      browser: [
-        'IE',
-        'Safari',
-        'Edge',
-        'Opera',
-        'Chrome',
-        'Firefox',
-        'Samsung Browser',
-        'UCBrowser',
-      ],
-    },
+    timeout: 30 * 1000, // 30s
     cors: {
       allowMethod: ['GET', 'DELETE', 'PUT', 'PATCH', 'POST'],
-      allowOrigin: process.env.REQUEST_WHITE_LIST || '*',
-      allowHeader: [
-        'Accept',
-        'Accept-Language',
-        'Content-Language',
-        'Content-Type',
-        'Origin',
-        'Authorization',
-        'Access-Control-Request-Method',
-        'Access-Control-Request-Headers',
-        'Access-Control-Allow-Headers',
-        'Access-Control-Allow-Origin',
-        'Access-Control-Allow-Methods',
-        'Access-Control-Allow-Credentials',
-        'Access-Control-Expose-Headers',
-        'Access-Control-Max-Age',
-        'Referer',
-        'Host',
-        'X-Requested-With',
-        'x-custom-lang',
-        'x-timestamp',
-        'x-api-key',
-        'x-timezone',
-        'x-request-id',
-        'x-version',
-        'x-repo-version',
-        'X-Response-Time',
-        'user-agent',
-      ],
+      allowOrigin: whitelist,
     },
     throttle: {
       ttl: 0.5,
       limit: 10,
     },
-  }),
-);
+  };
+});

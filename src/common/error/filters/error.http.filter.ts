@@ -1,22 +1,22 @@
+import CustomError from '@common/error/exceptions/custom-error.exception';
+import { NotifyService } from '@common/notify/services/notify.service';
 import {
-  ExceptionFilter,
-  Catch,
   ArgumentsHost,
+  Catch,
+  ExceptionFilter,
   HttpException,
   HttpStatus,
-  Inject,
+  Logger,
 } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 import { Response } from 'express';
 import { QueryFailedError } from 'typeorm';
-import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
-import { Logger } from 'winston';
-import CustomError from '@common/error/exceptions/custom-error.exception';
 
 @Catch()
 export class ErrorHttpFilter implements ExceptionFilter {
   constructor(
-    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
+    private readonly logger: Logger,
+    private readonly notifyService: NotifyService,
   ) {}
 
   private static handleResponse(
@@ -36,15 +36,14 @@ export class ErrorHttpFilter implements ExceptionFilter {
         ...JSON.parse(JSON.stringify(exception.getResponse())),
       };
     } else if (exception instanceof QueryFailedError) {
-      statusCode = HttpStatus.BAD_REQUEST;
       responseBody = {
         statusCode: statusCode,
-        message: exception.message,
+        message: 'Internal server error',
       };
     } else if (exception instanceof Error) {
       responseBody = {
         statusCode: statusCode,
-        message: exception.stack,
+        message: 'Internal server error',
       };
     }
 
@@ -65,7 +64,7 @@ export class ErrorHttpFilter implements ExceptionFilter {
   private handleMessage(
     exception: CustomError | HttpException | QueryFailedError | Error,
   ): void {
-    let message = `🔥Internal server error. Message: ${exception}. \n Stack: ${exception.stack.toString()}`;
+    let message = `🔥Internal server error. Message: ${exception.message}.`;
     let context = 'ERROR';
 
     if (
@@ -74,10 +73,16 @@ export class ErrorHttpFilter implements ExceptionFilter {
     ) {
       return;
     } else if (exception instanceof QueryFailedError) {
-      message = exception.stack.toString();
+      message = `🔥 TypeORM query error. Message: ${exception.message}.`;
       context = 'QUERY_FAILED';
     }
 
-    this.logger.error(message, context);
+    this.notifyService
+      .sendSmS('error', {
+        time: new Date().toISOString(),
+        error: message,
+      })
+      .then();
+    this.logger.error(message, exception.stack, context);
   }
 }

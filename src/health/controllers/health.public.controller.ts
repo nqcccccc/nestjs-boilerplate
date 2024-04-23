@@ -1,4 +1,5 @@
-import { Controller, Get, Inject, VERSION_NEUTRAL } from '@nestjs/common';
+import { MessageService } from '@common/message/services/message.service';
+import { Controller, Get, VERSION_NEUTRAL } from '@nestjs/common';
 import {
   DiskHealthIndicator,
   HealthCheck,
@@ -6,7 +7,6 @@ import {
   MemoryHealthIndicator,
   TypeOrmHealthIndicator,
 } from '@nestjs/terminus';
-import { MessageService } from '@common/message/services/message.service';
 import { I18nService } from 'nestjs-i18n';
 
 @Controller({

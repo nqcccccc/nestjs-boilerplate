@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": "./",
     "module": "commonjs",
     "declaration": true,
     "removeComments": true,
@@ -7,10 +8,10 @@
     "resolveJsonModule": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "es2017",
+    "esModuleInterop": true,
+    "target": "es2022",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,
@@ -30,6 +31,9 @@
       ],
       "@common/*": [
         "src/common/*"
+      ],
+      "@auth/*": [
+        "src/auth/*"
       ],
       "@app/*": [
         "src/app/*"

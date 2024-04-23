@@ -1,24 +1,37 @@
+import { AuthModule } from '@auth/auth.module';
 import { DynamicModule, ForwardReference, Module, Type } from '@nestjs/common';
 import { RouterModule as NestJsRouterModule } from '@nestjs/core';
-import { RoutesPublicModule } from 'src/router/routes/routes.public.module';
+
+import { RoutesAdminModule } from './routes/routes.admin.module';
+import { RoutesPublicModule } from './routes/routes.public.module';
 
 @Module({})
 export class RouterModule {
   static forRoot(): DynamicModule {
     const imports: (
       | DynamicModule
-      | Type<any>
+      | Type
       | Promise<DynamicModule>
-      | ForwardReference<any>
+      | ForwardReference
     )[] = [];
 
     if (process.env.HTTP_ENABLE === 'true') {
       imports.push(
         RoutesPublicModule,
+        RoutesAdminModule,
+        AuthModule,
         NestJsRouterModule.register([
           {
-            path: '/public',
+            path: '',
             module: RoutesPublicModule,
+          },
+          {
+            path: '/admin',
+            module: RoutesAdminModule,
+          },
+          {
+            path: '/auth',
+            module: AuthModule,
           },
         ]),
       );

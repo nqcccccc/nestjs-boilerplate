@@ -1,3 +1,5 @@
+import { AuthUser } from '@auth/types/auth.type';
+
 export {};
 
 declare global {
@@ -10,6 +12,9 @@ declare global {
       __userAgent?: string;
       __version?: string;
       __repoVersion?: string;
+      __customMaxFiles?: number;
+      __customMaxFileSize?: number;
+      user?: AuthUser;
     }
   }
 }

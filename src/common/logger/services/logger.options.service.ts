@@ -1,13 +1,14 @@
-import { ConfigService } from '@nestjs/config';
-import * as winston from 'winston';
 import 'winston-daily-rotate-file';
-import { utilities as nestWinstonModuleUtilities } from 'nest-winston';
 
-const infoAndWarnFilter = winston.format((info, opts) => {
+import { ConfigService } from '@nestjs/config';
+import { utilities as nestWinstonModuleUtilities } from 'nest-winston';
+import * as winston from 'winston';
+
+const infoAndWarnFilter = winston.format((info) => {
   return info.level === 'info' || info.level === 'warn' ? info : false;
 });
 
-const httpFilter = winston.format((info, opts) => {
+const httpFilter = winston.format((info) => {
   return info.level === 'http' ? info : false;
 });
 

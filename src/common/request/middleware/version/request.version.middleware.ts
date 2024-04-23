@@ -1,6 +1,6 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 @Injectable()
 export class RequestVersionMiddleware implements NestMiddleware {
@@ -27,7 +27,7 @@ export class RequestVersionMiddleware implements NestMiddleware {
     this.repoVersion = this.configService.get<string>('app.repoVersion');
   }
 
-  async use(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async use(req: Request, _res: Response, next: NextFunction): Promise<void> {
     const originalUrl: string = req.originalUrl;
     let version = this.versioningVersion;
     if (

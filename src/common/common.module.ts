@@ -1,12 +1,14 @@
+import configs from '@configs/index';
+import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import configs from '@configs/index';
-import { DatabaseModule } from '@common/database/database.module';
-import { LoggerModule } from '@common/logger/logger.module';
-import { ErrorModule } from '@common/error/error.module';
-import { RequestModule } from '@common/request/request.module';
-import { JobsModule } from '@common/jobs/jobs.module';
-import { MessageModule } from '@common/message/message.module';
+
+import { DatabaseModule } from './database/database.module';
+import { ErrorModule } from './error/error.module';
+import { JobsModule } from './jobs/jobs.module';
+import { LoggerModule } from './logger/logger.module';
+import { MessageModule } from './message/message.module';
+import { RequestModule } from './request/request.module';
 
 @Module({
   controllers: [],
@@ -25,6 +27,10 @@ import { MessageModule } from '@common/message/message.module';
     RequestModule,
     JobsModule.forRoot(),
     MessageModule,
+    HttpModule.register({
+      timeout: 5000,
+      maxRedirects: 5,
+    }),
   ],
 })
 export class CommonModule {}

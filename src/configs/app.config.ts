@@ -1,15 +1,14 @@
+import { APP_ENV } from '@app/constant/app.enum';
 import { registerAs } from '@nestjs/config';
 import * as process from 'process';
-import { version } from 'package.json';
-import { APP_ENV } from '@app/constant/app.enum';
 
 export default registerAs(
   'app',
   (): Record<string, any> => ({
-    name: process.env.APP_NAME ?? 'nodejs',
+    name: process.env.APP_NAME ?? 'NEST JS',
     env: process.env.APP_ENV ? APP_ENV[process.env.APP_ENV] : APP_ENV.DEV,
 
-    repoVersion: version,
+    repoVersion: process.env.APP_VER,
     versioning: {
       enable: process.env.HTTP_VERSIONING_ENABLE === 'true' ?? false,
       prefix: 'v',
